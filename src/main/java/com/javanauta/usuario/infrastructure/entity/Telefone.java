@@ -1,10 +1,7 @@
 package com.javanauta.usuario.infrastructure.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 /*
 
@@ -24,6 +21,7 @@ relacionamento @OneToMany definido na classe Usuario.
 @NoArgsConstructor // Gera um construtor vazio, necessário pelo JPA.
 
 @Entity // Define a classe como uma entidade JPA.
+@Builder
 @Table(name = "telefone") // Define "telefone" como nome da tabela
 public class Telefone {
 

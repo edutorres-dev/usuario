@@ -1,5 +1,5 @@
 package com.javanauta.usuario.infrastructure.repository;
-import com.javanautaaprendendo_spring.infrastructure.entity.Usuario;
+import com.javanauta.usuario.infrastructure.entity.Usuario;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
