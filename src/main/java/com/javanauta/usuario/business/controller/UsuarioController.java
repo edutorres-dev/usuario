@@ -3,12 +3,14 @@ package com.javanauta.usuario.business.controller;
 
 import com.javanauta.usuario.business.UsuarioService;
 import com.javanauta.usuario.business.dto.UsuarioDTO;
+import com.javanauta.usuario.infrastructure.entity.Usuario;
+import com.javanauta.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/usuario")
@@ -34,6 +36,8 @@ public class UsuarioController {
      * dependência através do construtor.
      */
     private final UsuarioService usuarioService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
 
     /*
@@ -96,5 +100,83 @@ public class UsuarioController {
          */
         return ResponseEntity.ok(usuarioSalvo);
     }
+
+    /*
+     * ==================
+     * LOGIN
+     * ==================
+     * */
+
+    // Define o endpoint: POST /usuario/login
+    // Utilizado para autenticar o usuário e gerar o JWT.
+
+    // @RequestBody recebe o JSON enviado pelo cliente
+    // e transforma os dados em um UsuarioDTO.
+
+    @PostMapping("/login")
+
+    // DTO é utilizado para controlar(filtrar) quais dados entram ou saem da API,
+    // evitando expor diretamente todos os atributos da entidade para o cliente
+    // os DTos podem ser tanto de request ( recebem dados) ou response(envio de dados)
+    public String login(@RequestBody UsuarioDTO usuarioDTO) {
+
+        // Solicita ao AuthenticationManager que autentique o usuário.
+        Authentication authentication = authenticationManager.authenticate(
+                // Cria um objeto contendo as credenciais do usuário. //
+                // email → identifica o usuário
+                // senha → senha informada no login.
+                new UsernamePasswordAuthenticationToken(
+                        usuarioDTO.getEmail(),
+                        usuarioDTO.getSenha()
+                )
+        );
+
+        // Gera um JWT utilizando o nome do usuário autenticado.
+        // authentication.getName() retorna o username autenticado.
+        // Neste projeto, o username é o email.
+        // "Bearer " informa ao cliente que o valor seguinte é um
+        // token utilizado no padrão Bearer Authentication.
+
+        return "Bearer " + jwtUtil.generateToken(authentication.getName());
+    }
+
+    /*
+     * ====================
+     * BUSCAR USUÁRIO
+     * ====================
+     * */
+
+    // Define este método como um endpoint HTTP GET.
+    // GET /usuario?email=usuario@email.com
+    @GetMapping
+    // O valor "joao@email.com" será armazenado na variável email.
+    public ResponseEntity<Usuario> buscarUsuarioPorEmail(@RequestParam("email")
+                                                         String email){
+        // Envia o email para o Service realizar a busca.
+        return ResponseEntity.ok(usuarioService.buscarUsuarioPorEmail(email));
+    }
+
+
+    /*
+     * =======================
+     * DELETAR USUÁRIO
+     * =======================
+     *
+     * */
+
+    // Define este método como um endpoint HTTP DELETE.
+    // DELETE /usuario/{email}
+    // @PathVariable pega o valor diretamente da URL.
+    // Exemplo:
+    // DELETE /usuario/joao@email.com
+    // O valor "joao@email.com" será colocado na variável email.
+    @DeleteMapping("/{email}")
+    public ResponseEntity<Void> deletaUsuarioPorEmail(@PathVariable String email){
+        // Solicita ao Service a exclusão do usuário pelo email.
+        usuarioService.deletaUsuarioPorEmail(email);
+        // Retorna HTTP 200 sem conteúdo no corpo da resposta.
+        return ResponseEntity.ok().build();
+    }
+
 }
 

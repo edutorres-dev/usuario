@@ -3,8 +3,11 @@ package com.javanauta.usuario.business;
 import com.javanauta.usuario.business.converter.UsuarioConverter;
 import com.javanauta.usuario.business.dto.UsuarioDTO;
 import com.javanauta.usuario.infrastructure.entity.Usuario;
+import com.javanauta.usuario.infrastructure.exception.ConflictException;
+import com.javanauta.usuario.infrastructure.exception.ResourceNotFoundException;
 import com.javanauta.usuario.infrastructure.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,6 +37,7 @@ public class UsuarioService {
      */
     private final UsuarioRepository usuarioRepository;
     private final UsuarioConverter usuarioConverter;
+    private final PasswordEncoder passwordEncoder; // responsável pela encriptação da senha
 
 
     /*
@@ -66,6 +70,9 @@ public class UsuarioService {
      * que será persistido no banco de dados.
      */
     public UsuarioDTO salvaUsuario(UsuarioDTO usuarioDTO) {
+
+        emailExiste(usuarioDTO.getEmail()); // verifica se o email existe
+        usuarioDTO.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
 
         /*
          * ======================================================
@@ -116,5 +123,70 @@ public class UsuarioService {
          * resposta da API.
          */
         return usuarioConverter.paraUsuarioDTO(usuario);
+
+
     }
+
+    /*
+     * =========================
+     * VERIFICA O EMAIL
+     * =========================
+     * */
+    public void emailExiste(String email){
+        try{
+            // Consulta o banco para verificar se o email existe.
+            boolean existe = verificaEmailExistente(email);
+            // se o email existe gera uma exception e interrompe o cadastro.
+            if(existe){
+                // Informa que o email já está cadastrado.
+                throw new ConflictException("Email já cadastrado" + email);
+            }
+        }catch(ConflictException e ){
+            throw new ConflictException( " Email já cadastrado" +e.getCause());
+        }
+
+
+    }
+
+    /*
+     * ===========================
+     * VERIFICAR SE O EMAIL EXISTE
+     * ===========================
+     * */
+
+
+    // Consulta o Repository e retorna se o email está cadastrado.
+    public boolean verificaEmailExistente(String email){
+        return usuarioRepository.existsByEmail(email);
+    }
+
+    /*
+     * =======================
+     * BUSCAR O USUÁRIO
+     * =======================
+     *
+     * */
+
+    // Busca um usuário pelo email.
+    public Usuario buscarUsuarioPorEmail(String email){
+
+        // Procura o usuário no banco pelo email.
+        // Se encontrar → retorna o Usuario.
+        // Se não encontrar → lança ResourceNotFoundException.
+        return usuarioRepository.findByEmail(email).orElseThrow(
+                ()-> new ResourceNotFoundException("Email não encontrado" + email));
+    }
+
+    /*
+     * ====================
+     * DELETAR USUARIO
+     * =====================
+     * */
+
+    // Exclui o usuário pelo email.
+    public void deletaUsuarioPorEmail(String email){
+        // Solicita ao Repository a exclusão do usuário
+        usuarioRepository.deleteByEmail(email);
+    }
+
 }
