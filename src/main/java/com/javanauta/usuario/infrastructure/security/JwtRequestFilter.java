@@ -71,7 +71,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             // Extrai do JWT o username do usuário.
             // Neste projeto, o username é o email
-            final String username = jwtUtil.extractUsername(token);
+            final String username = jwtUtil.extrairEmailToken(token);
 
             // Se o nome de usuário não for nulo e o usuário não estiver autenticado ainda
             // Isso evita autenticar novamente um usuário que //

@@ -302,4 +302,19 @@ public class UsuarioConverter {
                 .ddd(telefone.getDdd())
                 .build();
     }
+
+
+    // método atualização do usuario
+    public Usuario updateUsuario(UsuarioDTO usuarioDTO , Usuario entity){
+        return Usuario.builder()
+                // usuario mudou o nome pega esse nome e salva caso contrario mantém o da entity
+                .nome(usuarioDTO.getNome() !=null ? usuarioDTO.getNome() : entity.getNome())
+                // id não atualiza então pega direto do entity
+                .id(entity.getId())
+                .senha(usuarioDTO.getSenha() != null ? usuarioDTO.getSenha() : entity.getSenha())
+                .email(usuarioDTO.getEmail() != null ? usuarioDTO.getEmail() : entity.getEmail())
+                .enderecos(entity.getEnderecos())
+                .telefones(entity.getTelefones())
+                .build();
+    }
 }
