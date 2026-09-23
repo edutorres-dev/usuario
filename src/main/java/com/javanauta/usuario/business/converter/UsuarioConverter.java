@@ -304,17 +304,35 @@ public class UsuarioConverter {
     }
 
 
-    // método atualização do usuario
-    public Usuario updateUsuario(UsuarioDTO usuarioDTO , Usuario entity){
+    /*
+     ========================
+     ATUALIZAR DADOS DO USUÁRIO
+     =========================
+    */
+    public Usuario updateUsuario(UsuarioDTO usuarioDTO, Usuario entity) {
+
         return Usuario.builder()
-                // usuario mudou o nome pega esse nome e salva caso contrario mantém o da entity
-                .nome(usuarioDTO.getNome() !=null ? usuarioDTO.getNome() : entity.getNome())
-                // id não atualiza então pega direto do entity
+
+                // Se o DTO tiver nome, atualiza; caso contrário, mantém o nome atual.
+                .nome(usuarioDTO.getNome() != null ? usuarioDTO.getNome() : entity.getNome())
+
+                // O ID não é alterado; mantém o ID original da Entity.
                 .id(entity.getId())
+
+                // Se houver nova senha, atualiza; caso contrário, mantém a senha atual.
                 .senha(usuarioDTO.getSenha() != null ? usuarioDTO.getSenha() : entity.getSenha())
+
+                // Se houver novo e-mail, atualiza; caso contrário, mantém o e-mail atual.
                 .email(usuarioDTO.getEmail() != null ? usuarioDTO.getEmail() : entity.getEmail())
+
+                // Mantém os endereços já cadastrados para o usuário.
                 .enderecos(entity.getEnderecos())
+
+                // Mantém os telefones já cadastrados para o usuário.
                 .telefones(entity.getTelefones())
+
                 .build();
     }
+
+
 }

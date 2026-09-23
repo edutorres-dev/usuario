@@ -192,30 +192,29 @@ public class UsuarioService {
 
 
     /*
-     * ====================
+     * ==============================
      * ATUALIZANDO DADOS DO USUÁRIO
-     * =====================
-     * */
-    public UsuarioDTO atualizarDadosUsuario(String token,UsuarioDTO dto){
-        // busca o email do usuário através do token
-        String email = jwtUtil.extrairEmailToken((token.substring(7))); // extrair o email pelo token ,
-        //substring foi usado para tirar o berear do token
+     * ==============================
+     */
+    public UsuarioDTO atualizarDadosUsuario(String token, UsuarioDTO dto) {
 
-        // criptografa a senha novamente apenas se o usuário passar uma senha nova
-        // evitando encriptação duplicada
+        // Remove "Bearer " do token e extrai o e-mail do usuário autenticado.
+        String email = jwtUtil.extrairEmailToken(token.substring(7));
+
+        // Criptografa a nova senha somente se o usuário informar uma senha.
         dto.setSenha(dto.getSenha() != null ? passwordEncoder.encode(dto.getSenha()) : null);
 
-        // agora que temos o email vamos no repository buscar o usuário
-        Usuario usuarioEntity= usuarioRepository.findByEmail(email).orElseThrow(()->
+        // Busca o usuário no banco pelo e-mail extraído do token.
+        Usuario usuarioEntity = usuarioRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("Email não localizado"));
 
-        //atualiza ( mesclou os dados qu recebemos da requisição DTO com os dados do banco
-        Usuario usuario = usuarioConverter.updateUsuario(dto,usuarioEntity);
+        // Atualiza a Entity com os dados recebidos através do DTO.
+        Usuario usuario = usuarioConverter.updateUsuario(dto, usuarioEntity);
 
-        // salvou os dados do usuário convertido e depois pegou o retorno e converteu
-        // para o usuárioDTO
+        // Salva a Entity atualizada e converte o resultado novamente para DTO.
         return usuarioConverter.paraUsuarioDTO(usuarioRepository.save(usuario));
-
     }
+
+
 
 }

@@ -182,14 +182,21 @@ public class UsuarioController {
      * =======================
      * ATUALIZAR DADOS
      * =======================
-     *
-     * */
+     */
 
-    @PutMapping
-    public ResponseEntity<UsuarioDTO> atualizaDadoUsuario(@RequestBody UsuarioDTO dto,
-                                                          @RequestHeader ("Authorization") String token){
-        return ResponseEntity.ok(usuarioService.atualizarDadosUsuario(token,dto));
-    }
+    // Endpoint responsável por atualizar os dados do usuário autenticado.
+        @PutMapping
+        public ResponseEntity<UsuarioDTO> atualizaDadoUsuario(
+                @RequestBody UsuarioDTO dto,
+                @RequestHeader("Authorization") String token) {
+
+            // Envia o DTO e o token para o Service realizar a atualização.
+            return ResponseEntity.ok(
+                    usuarioService.atualizarDadosUsuario(token, dto)
+            );
+        }
+
+
 
 }
 
