@@ -2,7 +2,10 @@
 package com.javanauta.usuario.business.controller;
 
 import com.javanauta.usuario.business.UsuarioService;
+import com.javanauta.usuario.business.dto.EnderecoDTO;
+import com.javanauta.usuario.business.dto.TelefoneDTO;
 import com.javanauta.usuario.business.dto.UsuarioDTO;
+import com.javanauta.usuario.infrastructure.entity.Endereco;
 import com.javanauta.usuario.infrastructure.entity.Usuario;
 import com.javanauta.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -22,18 +25,6 @@ public class UsuarioController {
      * INJEÇÃO DE DEPENDÊNCIA
      * ==========================================================
      *
-     * O UsuarioService contém as regras de negócio relacionadas
-     * ao usuário.
-     *
-     * Através do "private final", declaramos a dependência que
-     * o Controller precisa para executar suas operações.
-     *
-     * A anotação @RequiredArgsConstructor do Lombok cria
-     * automaticamente um construtor contendo todos os atributos
-     * final.
-     *
-     * Dessa forma, o Spring consegue fazer a injeção de
-     * dependência através do construtor.
      */
     private final UsuarioService usuarioService;
     private final AuthenticationManager authenticationManager;
@@ -150,7 +141,7 @@ public class UsuarioController {
     // GET /usuario?email=usuario@email.com
     @GetMapping
     // O valor "joao@email.com" será armazenado na variável email.
-    public ResponseEntity<Usuario> buscarUsuarioPorEmail(@RequestParam("email")
+    public ResponseEntity<UsuarioDTO> buscarUsuarioPorEmail(@RequestParam("email")
                                                          String email){
         // Envia o email para o Service realizar a busca.
         return ResponseEntity.ok(usuarioService.buscarUsuarioPorEmail(email));
@@ -195,6 +186,19 @@ public class UsuarioController {
                     usuarioService.atualizarDadosUsuario(token, dto)
             );
         }
+
+        @PutMapping("/endereco")
+        public ResponseEntity<EnderecoDTO> atualizaEndereco(@RequestBody EnderecoDTO dto ,
+                                                            @RequestParam("id") Long id){
+            return ResponseEntity.ok(usuarioService.atualizaEndereco(id,dto));
+        }
+
+        @PutMapping("/telefone")
+        public ResponseEntity<TelefoneDTO> atualizaTelefone(@RequestBody TelefoneDTO dto ,
+                                                            @RequestParam("id") Long id){
+            return ResponseEntity.ok(usuarioService.atualizaTelefone(id,dto));
+        }
+
 
 
 
