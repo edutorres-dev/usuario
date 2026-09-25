@@ -27,7 +27,6 @@ import java.io.IOException;
  */
 
 
-
 // OncePerRequestFilter é uma classe do Spring usada
 // para criar filtros que devem ser executados uma única vez
 // por requisição HTTP.
@@ -71,7 +70,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             // Extrai do JWT o username do usuário.
             // Neste projeto, o username é o email
-            final String username = jwtUtil.extractUsername(token);
+            final String username = jwtUtil.extrairEmailToken(token);
 
             // Se o nome de usuário não for nulo e o usuário não estiver autenticado ainda
             // Isso evita autenticar novamente um usuário que //
