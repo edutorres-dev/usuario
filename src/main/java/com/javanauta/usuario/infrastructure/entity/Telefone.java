@@ -34,4 +34,7 @@ public class Telefone {
 
     @Column(name = "ddd", length = 100) // Define a coluna que armazena o DDD.
     private String ddd;
+
+    @Column(name="usuario_id")
+    private Long usuario_id;
 }

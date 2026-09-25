@@ -9,6 +9,7 @@ import com.javanauta.usuario.infrastructure.entity.Endereco;
 import com.javanauta.usuario.infrastructure.entity.Usuario;
 import com.javanauta.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.osgi.annotation.bundle.Header;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -197,6 +198,19 @@ public class UsuarioController {
         public ResponseEntity<TelefoneDTO> atualizaTelefone(@RequestBody TelefoneDTO dto ,
                                                             @RequestParam("id") Long id){
             return ResponseEntity.ok(usuarioService.atualizaTelefone(id,dto));
+        }
+
+
+        @PostMapping("/endereco")
+        public ResponseEntity<EnderecoDTO> cadastraEndereco(@RequestBody EnderecoDTO dto ,
+                                                            @RequestHeader("Authorization") String token){
+            return ResponseEntity.ok(usuarioService.cadastraEndereco(token,dto));
+        }
+
+        @PostMapping("/telefone")
+        public ResponseEntity<TelefoneDTO> cadastraTelefone(@RequestBody TelefoneDTO dto ,
+                                                            @RequestHeader("Authorization") String token){
+            return ResponseEntity.ok(usuarioService.cadastraTelefone(token,dto));
         }
 
 
