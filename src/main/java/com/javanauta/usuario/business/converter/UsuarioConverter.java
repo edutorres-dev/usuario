@@ -19,38 +19,18 @@ public class UsuarioConverter {
      * CONVERSÃO DE DTO PARA ENTITY
      * ==========================================================
      *
-     * O método abaixo recebe um UsuarioDTO e transforma seus dados em um objeto Usuario (Entity).
-
-     * ----------------------------------------------------------
-     * CONVERSÃO SEM BUILDER
-     * ----------------------------------------------------------
-     *
-     * Uma forma tradicional seria criar o objeto com "new" e
-     * preencher cada atributo utilizando os setters:
-     *
-     * Usuario usuario = new Usuario();
-     * usuario.setNome(usuarioDTO.getNome());
-     * usuario.setEmail(usuarioDTO.getEmail());
-     * usuario.setSenha(usuarioDTO.getSenha());
-     *
-     * ----------------------------------------------------------
-     * CONVERSÃO COM BUILDER
-     * ----------------------------------------------------------
-     *
-     * Utilizando o padrão Builder, conseguimos criar o objeto
-     * de forma mais organizada e legível.
-     *
-     * O Builder normalmente é gerado pelo Lombok através da
-     * anotação @Builder na Entity.
      */
+
     public Usuario paraUsuario(UsuarioDTO usuarioDTO) {
 
         return Usuario.builder()
                 .nome(usuarioDTO.getNome())
                 .email(usuarioDTO.getEmail())
                 .senha(usuarioDTO.getSenha())
-                .enderecos(paraListaEndereco(usuarioDTO.getEnderecos()))
-                .telefones(paraListaTelefones(usuarioDTO.getTelefones()))
+                .enderecos(usuarioDTO.getEnderecos() != null ?
+                        paraListaEndereco(usuarioDTO.getEnderecos()) : null)
+                .telefones(usuarioDTO.getTelefones() != null ?
+                        paraListaTelefones(usuarioDTO.getTelefones()) : null)
                 .build();
     }
 
@@ -185,14 +165,16 @@ public class UsuarioConverter {
      *       ↓
      * Resposta da API
      */
-    public UsuarioDTO paraUsuarioDTO(Usuario usuario) {
+    public UsuarioDTO paraUsuarioDTO(Usuario usuarioDTO) {
 
         return UsuarioDTO.builder()
-                .nome(usuario.getNome())
-                .email(usuario.getEmail())
-                .senha(usuario.getSenha())
-                .enderecos(paraListaEnderecoDTO(usuario.getEnderecos()))
-                .telefones(paraListaTelefonesDTO(usuario.getTelefones()))
+                .nome(usuarioDTO.getNome())
+                .email(usuarioDTO.getEmail())
+                .senha(usuarioDTO.getSenha())
+                .enderecos(usuarioDTO.getEnderecos() !=null ?
+                        paraListaEnderecoDTO(usuarioDTO.getEnderecos()) : null)
+                .telefones(usuarioDTO.getTelefones() != null ?
+                        paraListaTelefonesDTO(usuarioDTO.getTelefones()) : null)
                 .build();
     }
 
