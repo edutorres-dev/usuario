@@ -22,15 +22,6 @@ import java.util.List;
 UserDetails é uma interface do Spring Security que representa
 os dados de um usuário que será autenticado no sistema.
 
-Implementamos UserDetails na classe Usuario para informar ao
-Spring Security quais são os dados usados na autenticação:
-
- getUsername()    → identifica o usuário (neste projeto, o email)
- getPassword()    → retorna a senha/hash do usuário
- getAuthorities() → retorna as roles/permissões do usuário
-
-Ao implementar UserDetails, a classe Usuario passa a ser reconhecida
-pelo Spring Security como um usuário que pode ser autenticado .
 */
 
 public class Usuario implements UserDetails {
