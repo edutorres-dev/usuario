@@ -1,0 +1,42 @@
+# Lista de containers (serviços) que o Compose vai criar
+services:
+
+
+  # Serviço da aplicação Spring Boot (projeto de usuário)
+  app:
+    # Constrói a imagem a partir do Dockerfile da pasta atual
+    build: .
+    # Publica a porta no formato "PORTA_DA_MAQUINA:PORTA_DO_CONTAINER"
+    ports:
+      # Acessa a aplicação em http://localhost:8080
+      - "8080:8080"
+    # Variáveis de ambiente que sobrescrevem as propriedades do application.properties
+    environment:
+      # URL do banco: "db" é o nome do serviço Postgres abaixo, resolvido pela rede do Compose
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/db_usuario
+      # Usuário usado pela aplicação para conectar no banco
+      SPRING_DATASOURCE_USERNAME: postgres
+      # Senha usada pela aplicação para conectar no banco (deve ser igual à POSTGRES_PASSWORD)
+      SPRING_DATASOURCE_PASSWORD: 1234
+    # Inicia o container "db" antes da aplicação (garante a ordem, não que o banco já esteja pronto)
+    depends_on:
+      - db
+
+
+
+  # Serviço do banco de dados PostgreSQL
+  db:
+    # Imagem oficial do Postgres (latest pode mudar de versão; prefira fixar, ex.: postgres:16)
+    image: postgres:18
+    # Variáveis que configuram o Postgres na primeira inicialização
+    environment:
+      # Nome do banco criado automaticamente
+      POSTGRES_DB: db_usuario
+      # Usuário administrador criado no banco
+      POSTGRES_USER: postgres
+      # Senha desse usuário
+      POSTGRES_PASSWORD: 1234
+#     Publica a porta no formato "PORTA_DA_MAQUINA:PORTA_DO_CONTAINER"
+    ports:
+      # Permite acessar o banco de fora (DBeaver, pgAdmin) em localhost:5432
+      - "5433:5432"

@@ -6,6 +6,9 @@ import com.javanauta.usuario.business.dto.EnderecoDTO;
 import com.javanauta.usuario.business.dto.TelefoneDTO;
 import com.javanauta.usuario.business.dto.UsuarioDTO;
 import com.javanauta.usuario.infrastructure.security.JwtUtil;
+import com.javanauta.usuario.infrastructure.security.SecurityConfig;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,11 +21,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 
 /**
- * Expõe os endpoints de gerenciamento de usuários do BFF.
+ * Classe que  Expõe os endpoints de gerenciamento de usuários do BFF.
  * Recebe as requisições HTTP e delega as operações ao UsuarioService.
  */
 
 
+@Tag(name = "Tarefas", description = "Cadastro tarefas de usuários")
+@SecurityRequirement(name = SecurityConfig.SECURITY_SCHEME)
 public class UsuarioController {
 
     // Service responsável pelas operações relacionadas ao usuário.
